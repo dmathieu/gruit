@@ -1,34 +1,14 @@
 use crate::beer;
 use rocket_contrib::json::{Json, JsonValue};
-use serde::Deserialize;
 
 #[get("/")]
 pub fn index() -> Result<JsonValue, &'static str> {
     Ok(json!({"ok": true}))
 }
 
-#[derive(Deserialize)]
-pub struct MaltRequest {
-    name: String,
-    ebc: i32,
-}
-
-#[derive(Deserialize)]
-pub struct RecipeRequest {
-    malts: Vec<MaltRequest>,
-}
-
-#[post("/beer", data = "<recipe_request>")]
-pub fn post_beer(recipe_request: Json<RecipeRequest>) -> Result<JsonValue, &'static str> {
-    let mut recipe = beer::Recipe { malts: Vec::new() };
-    for malt in &recipe_request.malts {
-        recipe.malts.push(beer::Malt {
-            name: malt.name.clone(),
-            ebc: malt.ebc,
-        });
-    }
-
-    Ok(json!(recipe))
+#[post("/beer", data = "<recipe>")]
+pub fn post_beer(recipe: Json<beer::RecipeRequest>) -> Result<JsonValue, &'static str> {
+    Ok(json!(recipe.to_response()))
 }
 
 #[cfg(test)]
@@ -54,14 +34,14 @@ mod tests {
         let client = Client::new(rocket).expect("valid rocket instance");
         let mut resp = client
             .post("/beer")
-            .body("{\"malts\":[{\"ebc\":10,\"name\":\"hello\"}]}")
+            .body("{\"malts\":[{\"ebc\":10,\"name\":\"munich\"}]}")
             .dispatch();
 
         assert_eq!(resp.status(), Status::Ok);
         assert_eq!(resp.content_type(), Some(ContentType::JSON));
         assert_eq!(
             resp.body_string(),
-            Some("{\"malts\":[{\"ebc\":10,\"name\":\"hello\"}]}".into())
+            Some("{\"malts\":[{\"ebc\":10,\"name\":\"munich\"}]}".into())
         );
     }
 }
