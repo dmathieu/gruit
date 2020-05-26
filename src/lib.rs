@@ -2,14 +2,12 @@
 
 #[macro_use]
 extern crate rocket;
+#[macro_use]
+extern crate rocket_contrib;
 
 mod config;
-
-#[get("/")]
-fn index() -> &'static str {
-    "Hello, world!"
-}
+mod routes;
 
 pub fn rocket() -> rocket::Rocket {
-    rocket::custom(config::from_env()).mount("/", routes![index])
+    rocket::custom(config::from_env()).mount("/", routes![routes::index])
 }
