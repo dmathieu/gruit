@@ -34,14 +34,11 @@ mod tests {
         let client = Client::new(rocket).expect("valid rocket instance");
         let mut resp = client
             .post("/beer")
-            .body("{\"malts\":[{\"ebc\":10,\"name\":\"munich\"}]}")
+            .body("{\"efficiency\":80,\"quantity\":20,\"malts\":[{\"quantity\":1500,\"ebc\":10,\"name\":\"munich\"}]}")
             .dispatch();
 
         assert_eq!(resp.status(), Status::Ok);
         assert_eq!(resp.content_type(), Some(ContentType::JSON));
-        assert_eq!(
-            resp.body_string(),
-            Some("{\"malts\":[{\"ebc\":10,\"name\":\"munich\"}]}".into())
-        );
+        assert_eq!(resp.body_string(), Some("{\"ebc\":6}".into()));
     }
 }
