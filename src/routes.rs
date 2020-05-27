@@ -41,4 +41,15 @@ mod tests {
         assert_eq!(resp.content_type(), Some(ContentType::JSON));
         assert_eq!(resp.body_string(), Some("{\"ebc\":6}".into()));
     }
+
+    #[test]
+    fn test_post_beer_empty_body() {
+        let rocket = rocket::ignite().mount("/", routes![post_beer]);
+        let client = Client::new(rocket).expect("valid rocket instance");
+        let mut resp = client.post("/beer").body("{}").dispatch();
+
+        assert_eq!(resp.status(), Status::Ok);
+        assert_eq!(resp.content_type(), Some(ContentType::JSON));
+        assert_eq!(resp.body_string(), Some("{\"ebc\":0}".into()));
+    }
 }
