@@ -34,7 +34,7 @@ mod tests {
         let client = Client::new(rocket).expect("valid rocket instance");
         let mut resp = client
             .post("/beer")
-            .body("{\"efficiency\":80,\"quantity\":20,\"malts\":[{\"quantity\":1500,\"ebc\":10,\"name\":\"munich\"}]}")
+            .body("{\"efficiency\":80,\"quantity\":20,\"malts\":[{\"quantity\":1500,\"ebc\":10}]}")
             .dispatch();
 
         assert_eq!(resp.status(), Status::Ok);

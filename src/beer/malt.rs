@@ -2,7 +2,6 @@ use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct Malt {
-    pub name: String,
     pub quantity: i32,
     pub ebc: i32,
 }
@@ -28,7 +27,6 @@ mod tests {
                 80,
                 20,
                 &vec![Malt {
-                    name: String::from("test name"),
                     ebc: 150,
                     quantity: 1000
                 }]
@@ -41,12 +39,10 @@ mod tests {
                 20,
                 &vec![
                     Malt {
-                        name: String::from("test name"),
                         ebc: 150,
                         quantity: 1000
                     },
                     Malt {
-                        name: String::from("test name"),
                         ebc: 20,
                         quantity: 500
                     },

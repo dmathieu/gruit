@@ -31,7 +31,6 @@ mod tests {
             efficiency: 80,
             quantity: 20,
             malts: vec![malt::Malt {
-                name: String::from("hello"),
                 ebc: 10,
                 quantity: 500,
             }],
@@ -45,10 +44,10 @@ mod tests {
     #[test]
     fn test_recipe_deserialization() {
         let deserialized: RecipeRequest = serde_json::from_str(
-            "{\"efficiency\":75,\"quantity\":50,\"malts\":[{\"name\":\"carared\",\"ebc\":10,\"quantity\":200}]}",
+            "{\"efficiency\":75,\"quantity\":50,\"malts\":[{\"ebc\":10,\"quantity\":200}]}",
         )
         .unwrap();
-        assert_eq!(deserialized.malts[0].name, "carared");
+        assert_eq!(deserialized.malts[0].ebc, 10);
     }
 
     #[test]
