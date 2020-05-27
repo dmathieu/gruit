@@ -3,22 +3,18 @@ mod malt;
 
 #[derive(Deserialize)]
 pub struct RecipeRequest {
-    efficiency: Option<i32>,
-    quantity: Option<i32>,
-    malts: Option<Vec<malt::Malt>>,
+    #[serde(default)]
+    efficiency: i32,
+    #[serde(default)]
+    quantity: i32,
+    #[serde(default)]
+    malts: Vec<malt::Malt>,
 }
 
 impl RecipeRequest {
     pub fn to_response(&self) -> RecipeResponse {
-        let empty_malt: Vec<malt::Malt> = Vec::new();
-        let malts = self.malts.as_ref().unwrap_or(&empty_malt);
-
         RecipeResponse {
-            ebc: malt::calculate_ebc(
-                self.efficiency.unwrap_or(0),
-                self.quantity.unwrap_or(0),
-                &malts,
-            ),
+            ebc: malt::calculate_ebc(self.efficiency, self.quantity, &self.malts),
         }
     }
 }
@@ -35,16 +31,15 @@ mod tests {
     #[test]
     fn test_recipe_request() {
         let recipe = RecipeRequest {
-            efficiency: Some(80),
-            quantity: Some(20),
-            malts: Some(vec![malt::Malt {
+            efficiency: 80,
+            quantity: 20,
+            malts: vec![malt::Malt {
                 ebc: 10,
                 quantity: 500,
-            }]),
+            }],
         };
 
-        let malts = recipe.malts.as_ref().unwrap();
-        assert_eq!(1, malts.len());
+        assert_eq!(1, recipe.malts.len());
 
         let response = recipe.to_response();
         assert_eq!(2, response.ebc);
@@ -56,7 +51,7 @@ mod tests {
             "{\"efficiency\":75,\"quantity\":50,\"malts\":[{\"ebc\":10,\"quantity\":200}]}",
         )
         .unwrap();
-        assert_eq!(deserialized.malts.unwrap()[0].ebc, 10);
+        assert_eq!(deserialized.malts[0].ebc, 10);
     }
 
     #[test]
