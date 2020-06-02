@@ -39,7 +39,10 @@ mod tests {
 
         assert_eq!(resp.status(), Status::Ok);
         assert_eq!(resp.content_type(), Some(ContentType::JSON));
-        assert_eq!(resp.body_string(), Some("{\"ebc\":6}".into()));
+        assert_eq!(
+            resp.body_string(),
+            Some("{\"color\":[248,166,0],\"ebc\":6}".into())
+        );
     }
 
     #[test]
@@ -50,6 +53,9 @@ mod tests {
 
         assert_eq!(resp.status(), Status::Ok);
         assert_eq!(resp.content_type(), Some(ContentType::JSON));
-        assert_eq!(resp.body_string(), Some("{\"ebc\":0}".into()));
+        assert_eq!(
+            resp.body_string(),
+            Some("{\"color\":[0,0,0],\"ebc\":0}".into())
+        );
     }
 }

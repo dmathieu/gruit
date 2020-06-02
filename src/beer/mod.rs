@@ -13,8 +13,11 @@ pub struct RecipeRequest {
 
 impl RecipeRequest {
     pub fn to_response(&self) -> RecipeResponse {
+        let ebc = malt::calculate_ebc(self.efficiency, self.quantity, &self.malts);
+
         RecipeResponse {
-            ebc: malt::calculate_ebc(self.efficiency, self.quantity, &self.malts),
+            ebc: ebc,
+            color: malt::calculate_color(ebc),
         }
     }
 }
@@ -22,6 +25,7 @@ impl RecipeRequest {
 #[derive(Serialize, Debug)]
 pub struct RecipeResponse {
     ebc: i32,
+    color: malt::Color,
 }
 
 #[cfg(test)]
@@ -56,9 +60,12 @@ mod tests {
 
     #[test]
     fn test_recipe_serialization() {
-        let recipe = RecipeResponse { ebc: 10 };
+        let recipe = RecipeResponse {
+            ebc: 10,
+            color: malt::calculate_color(10),
+        };
 
         let serialized = serde_json::to_string(&recipe).unwrap();
-        assert_eq!("{\"ebc\":10}", serialized);
+        assert_eq!("{\"ebc\":10,\"color\":[222,124,0]}", serialized);
     }
 }
