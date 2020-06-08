@@ -34,14 +34,22 @@ mod tests {
         let client = Client::new(rocket).expect("valid rocket instance");
         let mut resp = client
             .post("/beer")
-            .body("{\"efficiency\":80,\"quantity\":20,\"malts\":[{\"quantity\":1500,\"ebc\":10}]}")
+            .body(
+                "{
+                \"efficiency\":80,
+                \"quantity\":20,
+                \"original_gravity\":1020,
+                \"malts\":[{\"quantity\":1500,\"ebc\":10}],
+                \"hops\":[{\"quantity\":12,\"alpha\":12,\"duration\":10}]
+            }",
+            )
             .dispatch();
 
         assert_eq!(resp.status(), Status::Ok);
         assert_eq!(resp.content_type(), Some(ContentType::JSON));
         assert_eq!(
             resp.body_string(),
-            Some("{\"color\":[248,166,0],\"ebc\":6}".into())
+            Some("{\"color\":[248,166,0],\"ebc\":6,\"ibu\":7.880000114440918}".into())
         );
     }
 
@@ -55,7 +63,7 @@ mod tests {
         assert_eq!(resp.content_type(), Some(ContentType::JSON));
         assert_eq!(
             resp.body_string(),
-            Some("{\"color\":[0,0,0],\"ebc\":0}".into())
+            Some("{\"color\":[0,0,0],\"ebc\":0,\"ibu\":0.0}".into())
         );
     }
 }
