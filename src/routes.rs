@@ -6,8 +6,13 @@ pub fn index() -> Result<JsonValue, &'static str> {
     Ok(json!({"ok": true}))
 }
 
-#[post("/beer", data = "<recipe>")]
-pub fn post_beer(recipe: Json<beer::RecipeRequest>) -> Result<JsonValue, &'static str> {
+#[post("/malt", data = "<recipe>")]
+pub fn post_malt(recipe: Json<beer::MaltRequest>) -> Result<JsonValue, &'static str> {
+    Ok(json!(recipe.to_response()))
+}
+
+#[post("/hop", data = "<recipe>")]
+pub fn post_hop(recipe: Json<beer::HopRequest>) -> Result<JsonValue, &'static str> {
     Ok(json!(recipe.to_response()))
 }
 
@@ -29,17 +34,52 @@ mod tests {
     }
 
     #[test]
-    fn test_post_beer() {
-        let rocket = rocket::ignite().mount("/", routes![post_beer]);
+    fn test_post_malt() {
+        let rocket = rocket::ignite().mount("/", routes![post_malt]);
         let client = Client::new(rocket).expect("valid rocket instance");
         let mut resp = client
-            .post("/beer")
+            .post("/malt")
             .body(
                 "{
                 \"efficiency\":80,
                 \"quantity\":20,
+                \"malts\":[{\"quantity\":1500,\"ebc\":10}]
+            }",
+            )
+            .dispatch();
+
+        assert_eq!(resp.status(), Status::Ok);
+        assert_eq!(resp.content_type(), Some(ContentType::JSON));
+        assert_eq!(
+            resp.body_string(),
+            Some("{\"color\":[248,166,0],\"ebc\":6}".into())
+        );
+    }
+
+    #[test]
+    fn test_post_malt_empty_body() {
+        let rocket = rocket::ignite().mount("/", routes![post_malt]);
+        let client = Client::new(rocket).expect("valid rocket instance");
+        let mut resp = client.post("/malt").body("{}").dispatch();
+
+        assert_eq!(resp.status(), Status::Ok);
+        assert_eq!(resp.content_type(), Some(ContentType::JSON));
+        assert_eq!(
+            resp.body_string(),
+            Some("{\"color\":[0,0,0],\"ebc\":0}".into())
+        );
+    }
+
+    #[test]
+    fn test_post_hop() {
+        let rocket = rocket::ignite().mount("/", routes![post_hop]);
+        let client = Client::new(rocket).expect("valid rocket instance");
+        let mut resp = client
+            .post("/hop")
+            .body(
+                "{
+                \"quantity\":20,
                 \"original_gravity\":1020,
-                \"malts\":[{\"quantity\":1500,\"ebc\":10}],
                 \"hops\":[{\"quantity\":12,\"alpha\":12,\"duration\":10}]
             }",
             )
@@ -49,21 +89,18 @@ mod tests {
         assert_eq!(resp.content_type(), Some(ContentType::JSON));
         assert_eq!(
             resp.body_string(),
-            Some("{\"color\":[248,166,0],\"ebc\":6,\"ibu\":7.880000114440918}".into())
+            Some("{\"ibu\":7.880000114440918}".into())
         );
     }
 
     #[test]
-    fn test_post_beer_empty_body() {
-        let rocket = rocket::ignite().mount("/", routes![post_beer]);
+    fn test_post_hop_empty_body() {
+        let rocket = rocket::ignite().mount("/", routes![post_hop]);
         let client = Client::new(rocket).expect("valid rocket instance");
-        let mut resp = client.post("/beer").body("{}").dispatch();
+        let mut resp = client.post("/hop").body("{}").dispatch();
 
         assert_eq!(resp.status(), Status::Ok);
         assert_eq!(resp.content_type(), Some(ContentType::JSON));
-        assert_eq!(
-            resp.body_string(),
-            Some("{\"color\":[0,0,0],\"ebc\":0,\"ibu\":0.0}".into())
-        );
+        assert_eq!(resp.body_string(), Some("{\"ibu\":0.0}".into()));
     }
 }

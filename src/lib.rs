@@ -10,7 +10,10 @@ mod config;
 mod routes;
 
 pub fn rocket() -> rocket::Rocket {
-    rocket::custom(config::from_env()).mount("/", routes![routes::index, routes::post_beer])
+    rocket::custom(config::from_env()).mount(
+        "/",
+        routes![routes::index, routes::post_malt, routes::post_hop],
+    )
 }
 
 #[cfg(test)]
