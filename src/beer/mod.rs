@@ -80,7 +80,7 @@ mod tests {
             original_gravity: 1020,
             hops: vec![hops::Hop {
                 quantity: 10,
-                alpha: 6,
+                alpha: 6.0,
                 duration: 30,
             }],
         };
@@ -114,7 +114,7 @@ mod tests {
             }",
         )
         .unwrap();
-        assert_eq!(deserialized.hops[0].alpha, 12);
+        assert_eq!(deserialized.hops[0].alpha, 12.0);
     }
 
     #[test]

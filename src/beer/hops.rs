@@ -3,7 +3,7 @@ use serde::{Deserialize, Serialize};
 #[derive(Serialize, Deserialize, Debug)]
 pub struct Hop {
     pub quantity: i32,
-    pub alpha: i32,
+    pub alpha: f32,
     pub duration: i32,
 }
 
@@ -39,7 +39,7 @@ fn test_calculate_ibu() {
             1050,
             &vec![Hop {
                 quantity: 10,
-                alpha: 6,
+                alpha: 6.0,
                 duration: 30
             }]
         )
@@ -52,12 +52,12 @@ fn test_calculate_ibu() {
             &vec![
                 Hop {
                     quantity: 10,
-                    alpha: 6,
+                    alpha: 6.0,
                     duration: 30
                 },
                 Hop {
                     quantity: 12,
-                    alpha: 12,
+                    alpha: 12.0,
                     duration: 60
                 },
             ]
