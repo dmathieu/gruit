@@ -43,7 +43,7 @@ impl HopRequest {
 
 #[derive(Serialize, Debug)]
 pub struct MaltResponse {
-    ebc: i32,
+    ebc: f32,
     color: malt::Color,
 }
 
@@ -62,7 +62,7 @@ mod tests {
             efficiency: 80,
             quantity: 20,
             malts: vec![malt::Malt {
-                ebc: 10,
+                ebc: 10.0,
                 quantity: 500,
             }],
         };
@@ -70,7 +70,7 @@ mod tests {
         assert_eq!(1, req.malts.len());
 
         let resp = req.to_response();
-        assert_eq!(2, resp.ebc);
+        assert_eq!(2.0, resp.ebc);
     }
 
     #[test]
@@ -101,7 +101,7 @@ mod tests {
             }",
         )
         .unwrap();
-        assert_eq!(deserialized.malts[0].ebc, 10);
+        assert_eq!(deserialized.malts[0].ebc, 10.0);
     }
 
     #[test]
@@ -120,12 +120,12 @@ mod tests {
     #[test]
     fn test_malt_serialization() {
         let resp = MaltResponse {
-            ebc: 10,
-            color: malt::calculate_color(10),
+            ebc: 10.0,
+            color: malt::calculate_color(10.0),
         };
 
         let serialized = serde_json::to_string(&resp).unwrap();
-        assert_eq!("{\"ebc\":10,\"color\":[222,124,0]}", serialized);
+        assert_eq!("{\"ebc\":10.0,\"color\":[222,124,0]}", serialized);
     }
 
     #[test]

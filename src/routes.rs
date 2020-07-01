@@ -52,7 +52,7 @@ mod tests {
         assert_eq!(resp.content_type(), Some(ContentType::JSON));
         assert_eq!(
             resp.body_string(),
-            Some("{\"color\":[248,166,0],\"ebc\":6}".into())
+            Some("{\"color\":[248,166,0],\"ebc\":6.0}".into())
         );
     }
 
@@ -66,7 +66,7 @@ mod tests {
         assert_eq!(resp.content_type(), Some(ContentType::JSON));
         assert_eq!(
             resp.body_string(),
-            Some("{\"color\":[0,0,0],\"ebc\":0}".into())
+            Some("{\"color\":[0,0,0],\"ebc\":null}".into())
         );
     }
 
