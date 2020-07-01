@@ -1,5 +1,7 @@
 # Gruit
 
+[gruit](https://en.wikipedia.org/wiki/Gruit) is the ancestor of beer.
+
 This is a project I've used to get acquainted with rust.
 It's a simple API which takes beer recipe data, and returns some easy calculations which can be made from it, such as the color and bitterness.
 
